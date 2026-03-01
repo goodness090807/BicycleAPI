@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.IdentityModel.Tokens;
-using Scalar.AspNetCore;
 using Serilog;
+using static BicycleAPI.Api.OpenApiBearerSecuritySchemeTransformer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -134,8 +134,11 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddShared(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
-builder.Services.AddOpenApi("v1");
+builder.Services.AddOpenApi("v1", options =>
+{
+    options.AddBearerSecurityScheme();
+    options.AddEndpointsHttpSecuritySchemeResolution();
+});
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddHealthChecks();
@@ -180,10 +183,10 @@ app.MapHealthChecks("/health");
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference(options =>
+
+    app.UseSwaggerUI(options =>
     {
-        options.AddDocuments(["v1"]);
-        options.AddPreferredSecuritySchemes("Bearer");
+        options.SwaggerEndpoint("/openapi/v1.json", "v1");
     });
 }
 

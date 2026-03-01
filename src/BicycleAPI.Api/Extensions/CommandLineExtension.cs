@@ -17,7 +17,7 @@ public static class CommandLineExtension
             ("Environment", builder.Environment.EnvironmentName, false),
             ("Listening", urls, false),
             ("", "", false),
-            ("Scalar UI", $"{baseUrl}/scalar", true),
+            ("API Docs", $"{baseUrl}/swagger", true),
             ("Health", $"{baseUrl}/health", true)
         };
 
